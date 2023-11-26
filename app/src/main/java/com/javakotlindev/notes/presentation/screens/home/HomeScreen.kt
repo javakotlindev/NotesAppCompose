@@ -1,13 +1,13 @@
 package com.javakotlindev.notes.presentation.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,6 +42,8 @@ import com.javakotlindev.notes.presentation.core.utils.collectSideEffect
 import com.javakotlindev.notes.presentation.model.NoteUIColor.Companion.getSafeColor
 import com.javakotlindev.notes.presentation.screens.home.HomeSideEffect.OpenNoteScreen
 import com.javakotlindev.notes.presentation.screens.note.NoteScreen
+import com.javakotlindev.notes.presentation.screens.search.SearchScreen
+import com.javakotlindev.notes.presentation.ui.component.EmptyContent
 import com.javakotlindev.notes.presentation.ui.theme.NotesTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -55,7 +57,7 @@ object HomeScreen : Screen {
         HomeContent(
             uiState = uiState,
             onAddNote = viewModel::onAddNote,
-            onSearch = {},
+            onSearch = { navigator.push(SearchScreen) },
             onSelectNote = { navigator.push(NoteScreen(it)) }
         )
         OnSideEffect(viewModel = viewModel, navigator = navigator)
@@ -109,32 +111,19 @@ object HomeScreen : Screen {
                         }
                     }
                 }
-                if (uiState.notes.isEmpty()) {
-                    EmptyNotes(
+                AnimatedVisibility(uiState.notes.isEmpty(), enter = fadeIn(), exit = fadeOut()) {
+                    EmptyContent(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(20.dp)
+                            .padding(20.dp),
+                        painter = painterResource(id = R.drawable.ic_empty),
+                        text = "Create your first note !"
                     )
                 }
             }
         }
     }
 
-    @Composable
-    private fun EmptyNotes(modifier: Modifier) {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_empty),
-                contentDescription = null,
-                modifier = Modifier.aspectRatio(7f / 5f),
-            )
-            Text(text = "Create your first note !")
-        }
-    }
 
     @Composable
     private fun OnSideEffect(viewModel: HomeViewModel, navigator: Navigator) {
