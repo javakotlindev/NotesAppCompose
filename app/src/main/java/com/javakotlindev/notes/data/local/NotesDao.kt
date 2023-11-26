@@ -7,4 +7,6 @@ interface NotesDao {
     fun getAllNotes(): Flow<List<NotesEntity>>
 
     suspend fun saveNote(notesEntity: NotesEntity)
+
+    suspend fun deleteNote(id: String)
 }

@@ -21,4 +21,8 @@ class HomeViewModel(
     fun onAddNote() {
         launch { postSideEffect(OpenNoteScreen(NoteModel())) }
     }
+
+    fun onDeleteNote(id: String) {
+        launch { notesRepository.deleteNote(id) }
+    }
 }

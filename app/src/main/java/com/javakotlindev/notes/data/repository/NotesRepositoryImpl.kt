@@ -18,4 +18,8 @@ class NotesRepositoryImpl(
     override suspend fun saveNote(noteModel: NoteModel) {
         notesDao.saveNote(noteModel.mapToNoteEntity())
     }
+
+    override suspend fun deleteNote(id: String) {
+        notesDao.deleteNote(id)
+    }
 }

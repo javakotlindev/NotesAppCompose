@@ -50,18 +50,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.javakotlindev.notes.R.drawable
+import com.javakotlindev.notes.R.string
 import com.javakotlindev.notes.domain.model.NoteColor
 import com.javakotlindev.notes.domain.model.NoteModel
 import com.javakotlindev.notes.presentation.core.utils.collectSideEffect
 import com.javakotlindev.notes.presentation.model.NoteUIColor
 import com.javakotlindev.notes.presentation.screens.note.NoteSideEffect.PopUp
+import com.javakotlindev.notes.presentation.ui.theme.NotesTheme
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -101,7 +105,7 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun NoteContent(
+    fun NoteContent(
         uiState: NoteState,
         onPopUp: () -> Unit,
         onChangeTitle: (String) -> Unit,
@@ -147,7 +151,7 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                 TextField(
                     value = uiState.title,
                     onValueChange = onChangeTitle,
-                    placeholder = { Text(text = "Title", fontSize = 48.sp) },
+                    placeholder = { Text(text = stringResource(string.Title), fontSize = 48.sp) },
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Transparent,
                         unfocusedIndicatorColor = Transparent,
@@ -162,7 +166,9 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                 TextField(
                     value = uiState.description,
                     onValueChange = onChangeDesc,
-                    placeholder = { Text(text = "Type something...", fontSize = 23.sp) },
+                    placeholder = {
+                        Text(text = stringResource(string.DescHint), fontSize = 23.sp)
+                    },
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Transparent,
                         unfocusedIndicatorColor = Transparent,
@@ -215,7 +221,7 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
             ) {
                 Icon(imageVector = Icons.Default.Info, contentDescription = null)
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = "Save changes ?", fontSize = 23.sp)
+                Text(text = stringResource(string.SaveChanges), fontSize = 23.sp)
                 Spacer(modifier = Modifier.height(20.dp))
                 Row {
                     Button(
@@ -223,7 +229,7 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "Discard")
+                        Text(text = stringResource(string.Discard))
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
@@ -231,10 +237,26 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "Keep")
+                        Text(text = stringResource(string.Keep))
                     }
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ShowNotes() {
+    NotesTheme {
+        NoteScreen(NoteModel()).NoteContent(
+            uiState = NoteState(),
+            onPopUp = { },
+            onChangeTitle = {},
+            onChangeDesc = {},
+            onSelectColor = {},
+            onReadSelect = {},
+            onSaveNote = {}
+        )
     }
 }

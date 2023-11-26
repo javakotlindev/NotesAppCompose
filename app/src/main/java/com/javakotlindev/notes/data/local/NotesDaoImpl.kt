@@ -14,4 +14,8 @@ class NotesDaoImpl(
     override suspend fun saveNote(notesEntity: NotesEntity) {
         database.notesQueries.saveNote(notesEntity)
     }
+
+    override suspend fun deleteNote(id: String) {
+        database.notesQueries.deleteNoteById(id)
+    }
 }

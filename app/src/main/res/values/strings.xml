@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="CreateFirstNote">Create your first note !</string>
+    <string name="Title">Title</string>
+    <string name="DescHint">Type something...</string>
+    <string name="Keep">Keep</string>
+    <string name="Discard">Discard</string>
+    <string name="SaveChanges">Save changes ?</string>
 </resources>

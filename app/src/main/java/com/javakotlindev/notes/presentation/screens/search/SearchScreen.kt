@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -47,9 +48,10 @@ import com.javakotlindev.notes.domain.model.NoteModel
 import com.javakotlindev.notes.presentation.model.NoteUIColor
 import com.javakotlindev.notes.presentation.screens.note.NoteScreen
 import com.javakotlindev.notes.presentation.ui.component.EmptyContent
+import com.javakotlindev.notes.presentation.ui.theme.NotesTheme
 import org.koin.androidx.compose.koinViewModel
 
-object SearchScreen : Screen {
+class SearchScreen : Screen {
 
     @Composable
     override fun Content() {
@@ -66,7 +68,7 @@ object SearchScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     @Composable
-    private fun SearchContent(
+    fun SearchContent(
         uiState: SearchState,
         onPopUp: () -> Unit,
         onSearch: (String) -> Unit,
@@ -128,17 +130,29 @@ object SearchScreen : Screen {
                 AnimatedVisibility(
                     visible = uiState.notes.isEmpty() && uiState.query.isNotEmpty(),
                     enter = fadeIn(),
-                    exit = fadeOut()
+                    exit = fadeOut(),
+                    modifier = Modifier.align(Alignment.Center)
                 ) {
                     EmptyContent(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(20.dp),
+                        modifier = Modifier.padding(20.dp),
                         painter = painterResource(id = R.drawable.ic_empty_search),
                         text = "File not found. Try searching again."
                     )
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ShowSearch() {
+    NotesTheme {
+        SearchScreen().SearchContent(
+            uiState = SearchState(query = "something"),
+            onPopUp = {},
+            onSearch = {},
+            onSelectItem = { }
+        )
     }
 }
