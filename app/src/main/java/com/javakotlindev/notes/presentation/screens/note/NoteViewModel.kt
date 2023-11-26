@@ -47,7 +47,7 @@ class NoteViewModel(
         launch {
             notesRepository.saveNote(
                 NoteModel(
-                    id = UUID.randomUUID().toString(),
+                    id = note.id.ifEmpty { UUID.randomUUID().toString() },
                     title = state.title.trim(),
                     description = state.description.trim(),
                     color = state.color

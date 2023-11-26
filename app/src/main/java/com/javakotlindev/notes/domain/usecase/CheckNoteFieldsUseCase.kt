@@ -13,6 +13,8 @@ class CheckNoteFieldsUseCase {
     ): Boolean {
         if (title.trim().isEmpty() && description.trim().isEmpty()) return false
         if (title.length < 5 || description.length < 10) return false
-        return previousNote.title != title && previousNote.description != description || previousNote.color != color
+        return previousNote.title != title.trim() ||
+                previousNote.description != description.trim() ||
+                previousNote.color != color
     }
 }

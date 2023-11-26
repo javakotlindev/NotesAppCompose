@@ -2,6 +2,7 @@ package com.javakotlindev.notes.presentation.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,10 +37,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.javakotlindev.notes.R
+import com.javakotlindev.notes.domain.model.NoteModel
 import com.javakotlindev.notes.presentation.core.utils.collectSideEffect
 import com.javakotlindev.notes.presentation.model.NoteUIColor.Companion.getSafeColor
 import com.javakotlindev.notes.presentation.screens.home.HomeSideEffect.OpenNoteScreen
-import com.javakotlindev.notes.presentation.screens.home.HomeSideEffect.OpenSearchScreen
 import com.javakotlindev.notes.presentation.screens.note.NoteScreen
 import com.javakotlindev.notes.presentation.ui.theme.NotesTheme
 import org.koin.androidx.compose.koinViewModel
@@ -51,29 +52,30 @@ object HomeScreen : Screen {
         val viewModel = koinViewModel<HomeViewModel>()
         val uiState by viewModel.uiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-        HomeContent(uiState, onAddNote = viewModel::onAddNote, onSearch = {})
+        HomeContent(
+            uiState = uiState,
+            onAddNote = viewModel::onAddNote,
+            onSearch = {},
+            onSelectNote = { navigator.push(NoteScreen(it)) }
+        )
         OnSideEffect(viewModel = viewModel, navigator = navigator)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun HomeContent(uiState: HomeState, onAddNote: () -> Unit, onSearch: () -> Unit) {
+    private fun HomeContent(
+        uiState: HomeState,
+        onAddNote: () -> Unit,
+        onSearch: () -> Unit,
+        onSelectNote: (NoteModel) -> Unit
+    ) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text(text = "Notes") },
                     actions = {
                         IconButton(onClick = onSearch) {
-                            Image(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null
-                            )
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Image(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null
-                            )
+                            Image(imageVector = Icons.Default.Search, contentDescription = null)
                         }
                     }
                 )
@@ -96,11 +98,11 @@ object HomeScreen : Screen {
                     items(uiState.notes) { note ->
                         Box(
                             modifier = Modifier
+                                .padding(vertical = 4.dp)
                                 .fillMaxWidth()
-                                .background(
-                                    color = getSafeColor(note.color.name).color,
-                                    shape = MaterialTheme.shapes.small
-                                )
+                                .clip(MaterialTheme.shapes.small)
+                                .clickable { onSelectNote(note) }
+                                .background(color = getSafeColor(note.color.name).color)
                                 .padding(20.dp),
                         ) {
                             Text(text = note.title)
@@ -139,9 +141,6 @@ object HomeScreen : Screen {
         viewModel.collectSideEffect { sideEffect ->
             when (sideEffect) {
                 is OpenNoteScreen -> navigator.push(NoteScreen(sideEffect.note))
-                OpenSearchScreen -> {
-
-                }
             }
         }
     }
@@ -150,7 +149,7 @@ object HomeScreen : Screen {
     @Composable
     private fun ShowHome() {
         NotesTheme {
-            HomeContent(uiState = HomeState(), onAddNote = {}, onSearch = {})
+            HomeContent(uiState = HomeState(), onAddNote = {}, onSearch = {}, onSelectNote = {})
         }
     }
 }
