@@ -108,7 +108,8 @@ class SearchScreen : Screen {
                         containerColor = MaterialTheme.colorScheme.primary,
                     )
                 )
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.primary
         ) { paddings ->
             Box(
                 modifier = Modifier

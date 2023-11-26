@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +34,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -135,20 +135,39 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                     actions = {
                         AnimatedContent(targetState = uiState.isReadMode, label = "") { isRead ->
                             if (isRead) {
-                                IconButton(onClick = { onReadSelect(false) }) {
-                                    Image(Icons.Default.Edit, null)
+                                IconButton(
+                                    onClick = { onReadSelect(false) },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondary,
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSecondary
+                                    )
                                 }
                             } else if (note.id.isNotEmpty()) {
-                                IconButton(onClick = { onReadSelect(true) }) {
-                                    Image(painterResource(drawable.visibility), null)
+                                IconButton(
+                                    onClick = { onReadSelect(true) },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondary,
+                                    )
+                                ) {
+                                    Icon(
+                                        painterResource(drawable.visibility),
+                                        null,
+                                        tint = MaterialTheme.colorScheme.onSecondary
+                                    )
                                 }
                             }
                         }
                         AnimatedVisibility(uiState.isSaveEnabled) {
                             IconButton(onClick = onSaveNote) {
-                                Image(
+                                Icon(
                                     painter = painterResource(drawable.save),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSecondary
                                 )
                             }
                         }
