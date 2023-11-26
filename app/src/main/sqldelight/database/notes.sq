@@ -1,0 +1,28 @@
+CREATE TABLE NotesEntity (
+   id TEXT NOT NULL PRIMARY KEY,
+   title TEXT NOT NULL,
+   description TEXT NOT NULL,
+   color TEXT NOT NULL
+);
+
+deleteNoteById:
+DELETE FROM NotesEntity
+WHERE id = :id;
+
+getNoteById:
+SELECT *
+FROM NotesEntity
+WHERE id = :id;
+
+
+getAllNotes:
+SELECT * FROM NotesEntity;
+
+saveNote:
+INSERT OR REPLACE
+INTO NotesEntity(
+    id,
+    title,
+    description,
+    color
+) VALUES :PaymentServicesEntity;

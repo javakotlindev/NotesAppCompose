@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.squareup.sqldelight").version("1.5.5")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -41,12 +42,19 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+sqldelight {
+    database("NotesDatabase") {
+        packageName = "uz.javakotlindev.notes.cache"
+        sourceFolders = listOf("sqldelight")
     }
 }
 
@@ -57,7 +65,9 @@ dependencies {
 
     implementation("androidx.activity:activity-compose:1.8.1")
 
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.foundation:foundation-layout")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -68,6 +78,7 @@ dependencies {
 
     implementation("com.squareup.sqldelight:android-driver:1.5.5")
     implementation("com.squareup.sqldelight:runtime:1.5.5")
+    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.5")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

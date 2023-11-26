@@ -29,10 +29,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.javakotlindev.notes.R
+import com.javakotlindev.notes.presentation.core.utils.collectSideEffect
 import com.javakotlindev.notes.presentation.model.NoteUIColor.Companion.getSafeColor
+import com.javakotlindev.notes.presentation.screens.home.HomeSideEffect.OpenNoteScreen
+import com.javakotlindev.notes.presentation.screens.home.HomeSideEffect.OpenSearchScreen
+import com.javakotlindev.notes.presentation.screens.note.NoteScreen
+import com.javakotlindev.notes.presentation.ui.theme.NotesTheme
 import org.koin.androidx.compose.koinViewModel
 
 object HomeScreen : Screen {
@@ -41,35 +50,40 @@ object HomeScreen : Screen {
     override fun Content() {
         val viewModel = koinViewModel<HomeViewModel>()
         val uiState by viewModel.uiState.collectAsState()
-        HomeContent(uiState)
+        val navigator = LocalNavigator.currentOrThrow
+        HomeContent(uiState, onAddNote = viewModel::onAddNote, onSearch = {})
+        OnSideEffect(viewModel = viewModel, navigator = navigator)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun HomeContent(uiState: HomeState) {
+    private fun HomeContent(uiState: HomeState, onAddNote: () -> Unit, onSearch: () -> Unit) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text(text = "Notes") },
                     actions = {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = onSearch) {
                             Image(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = "SearchIcon"
+                                contentDescription = null
                             )
                         }
                         IconButton(onClick = { /*TODO*/ }) {
                             Image(
                                 imageVector = Icons.Default.Info,
-                                contentDescription = "InfoIcon"
+                                contentDescription = null
                             )
                         }
                     }
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
-                    Image(imageVector = Icons.Default.Add, contentDescription = null)
+                FloatingActionButton(onClick = onAddNote) {
+                    Image(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
                 }
             }
         ) { paddings ->
@@ -117,6 +131,26 @@ object HomeScreen : Screen {
                 modifier = Modifier.aspectRatio(7f / 5f),
             )
             Text(text = "Create your first note !")
+        }
+    }
+
+    @Composable
+    private fun OnSideEffect(viewModel: HomeViewModel, navigator: Navigator) {
+        viewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
+                is OpenNoteScreen -> navigator.push(NoteScreen(sideEffect.note))
+                OpenSearchScreen -> {
+
+                }
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun ShowHome() {
+        NotesTheme {
+            HomeContent(uiState = HomeState(), onAddNote = {}, onSearch = {})
         }
     }
 }
