@@ -70,7 +70,7 @@ class HomeScreen : Screen {
         HomeContent(
             uiState = uiState,
             onAddNote = viewModel::onAddNote,
-            onSearch = { navigator.push(SearchScreen) },
+            onSearch = { navigator.push(SearchScreen()) },
             onSelectNote = { navigator.push(NoteScreen(it)) },
             onDeleteNote = viewModel::onDeleteNote
         )
