@@ -26,11 +26,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -91,20 +93,38 @@ class HomeScreen : Screen {
                 TopAppBar(
                     title = { Text(text = stringResource(string.app_name)) },
                     actions = {
-                        IconButton(onClick = onSearch) {
-                            Image(imageVector = Icons.Default.Search, contentDescription = null)
+                        IconButton(
+                            onClick = onSearch,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary
+                            )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = onAddNote) {
+                FloatingActionButton(
+                    onClick = onAddNote,
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                ) {
                     Image(
                         imageVector = Icons.Default.Add,
                         contentDescription = null
                     )
                 }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.primary,
         ) { paddings ->
             Box(
                 modifier = Modifier
@@ -181,7 +201,7 @@ class HomeScreen : Screen {
                         .background(color = getSafeColor(note.color.name).color)
                         .padding(20.dp),
                 ) {
-                    Text(text = note.title)
+                    Text(text = note.title, color = Color.White)
                 }
             }
         )

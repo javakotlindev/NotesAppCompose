@@ -5,7 +5,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +45,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.javakotlindev.notes.R
+import com.javakotlindev.notes.R.string
 import com.javakotlindev.notes.domain.model.NoteModel
 import com.javakotlindev.notes.presentation.model.NoteUIColor
 import com.javakotlindev.notes.presentation.screens.note.NoteScreen
@@ -95,9 +97,16 @@ class SearchScreen : Screen {
                     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                     navigationIcon = {
                         IconButton(onClick = onPopUp) {
-                            Image(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    )
                 )
             }
         ) { paddings ->
@@ -136,7 +145,7 @@ class SearchScreen : Screen {
                     EmptyContent(
                         modifier = Modifier.padding(20.dp),
                         painter = painterResource(id = R.drawable.ic_empty_search),
-                        text = "File not found. Try searching again."
+                        text = stringResource(string.FileNotFound)
                     )
                 }
             }

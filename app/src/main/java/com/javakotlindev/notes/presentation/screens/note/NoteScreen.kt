@@ -13,14 +13,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -37,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -120,7 +125,11 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                     title = { Text(text = note.title) },
                     navigationIcon = {
                         IconButton(onClick = onPopUp) {
-                            Image(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
                     },
                     actions = {
@@ -143,11 +152,21 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                                 )
                             }
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    )
                 )
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.primary
         ) {
-            Column(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+            ) {
                 TextField(
                     value = uiState.title,
                     onValueChange = onChangeTitle,
@@ -159,7 +178,10 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                         focusedContainerColor = Transparent,
                         unfocusedContainerColor = Transparent
                     ),
-                    textStyle = TextStyle(fontSize = 48.sp),
+                    textStyle = TextStyle(
+                        fontSize = 48.sp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = uiState.isReadMode
                 )
@@ -176,7 +198,10 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                         focusedContainerColor = Transparent,
                         unfocusedContainerColor = Transparent
                     ),
-                    textStyle = TextStyle(fontSize = 23.sp),
+                    textStyle = TextStyle(
+                        fontSize = 23.sp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
@@ -184,7 +209,7 @@ data class NoteScreen(val note: NoteModel) : Screen, Parcelable {
                 )
                 LazyRow(
                     modifier = Modifier
-                        .padding(20.dp)
+                        .padding(vertical = 12.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
                     items(NoteUIColor.entries) { noteColor ->
